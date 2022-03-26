@@ -9,15 +9,18 @@ conf = {
 	"global_epochs" : 10,
 
 	#本地epoch
-	"local_epochs" : 10,
+	"local_epochs" : 5,
 
-
+	#batch size
 	"batch_size" : 64,
 
     #学习速率
 	"lr" : 0.001,
 
 	"momentum" : 0.9,
+
+	#狄利克雷分布进行数据划分参数
+	"beta" : 0.1,
 
 	#分类
 	"num_classes": 10,
