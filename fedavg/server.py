@@ -33,8 +33,7 @@ class Server(object):
         total_loss = 0.0
         correct = 0
         dataset_size = 0
-        predict = []
-        label = []
+
         criterion = torch.nn.CrossEntropyLoss()
         for batch_id, batch in enumerate(self.test_loader):
             data, target = batch
@@ -49,9 +48,6 @@ class Server(object):
             total_loss += criterion(output, target) # sum up batch loss
             pred = output.data.max(1)[1]  # get the index of the max log-probability
             correct += pred.eq(target.data.view_as(pred)).cpu().sum().item()
-
-            predict.extend(pred.numpy())
-            label.extend(target.numpy())
 
         acc = 100.0 * (float(correct) / float(dataset_size))
         total_l = total_loss / dataset_size
