@@ -76,7 +76,7 @@ class Client(object):
             correct += pred.eq(target.data.view_as(pred)).cpu().sum().item()
 
         acc = 100.0 * (float(correct) / float(dataset_size))
-        total_l = total_loss / dataset_size
+        total_l = total_loss.cpu().detach().numpy() / dataset_size
 
         return acc, total_l
 
