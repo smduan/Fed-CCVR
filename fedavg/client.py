@@ -127,6 +127,7 @@ class Client(object):
                 f_mean, f_cov = self._cal_mean_cov(features)
 
             else:
+                ##TODO: 根据最后一层隐藏层输出决定均值和方差的维度
                 f_mean = np.zeros((256,))
                 f_cov = np.zeros((256,256))
 
