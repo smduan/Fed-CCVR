@@ -111,18 +111,11 @@ def get_cifar10():
 
     return train_datasets, val_datasets, test_dataset
 
+def CKA():
+
+    pass
 
 
-
-if __name__ == "__main__":
-    # trainset = pd.read_csv('./data/cifar10/train/train.csv')
-    # label_skew(trainset,'label',10,3,0.1,'./data/cifar10/train/')
-
-
-
-    a = [1]
-    b = a*256
-    print(b)
 
 
 

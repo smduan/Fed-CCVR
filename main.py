@@ -90,6 +90,8 @@ if __name__ == '__main__':
 
     #获取要重来的网络层
     retrain_model = ReTrainModel()
+    if torch.cuda.is_available():
+        retrain_model.cuda()
     reset_name = []
     for name, _ in retrain_model.state_dict().items():
         reset_name.append(name)
