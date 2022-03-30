@@ -85,7 +85,7 @@ def get_cifar10():
     ###训练数据
     train_data = pd.read_csv(conf["train_dataset"])
 
-    train_data = label_skew(train_data,conf["label_column"],conf["num_classes"],conf["num_parties"],conf["beta"])
+    train_data = label_skew(train_data,conf["label_column"],conf["num_classes"],conf["num_parties"],0.1)
 
     train_datasets = {}
     val_datasets = {}
