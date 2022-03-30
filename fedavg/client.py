@@ -28,7 +28,7 @@ class Client(object):
         for name, param in model.state_dict().items():
             self.local_model.state_dict()[name].copy_(param.clone())
 
-        optimizer = torch.optim.SGD(self.local_model.parameters(), lr=self.conf['lr'], momentum=self.conf['momentum'])
+        optimizer = torch.optim.SGD(self.local_model.parameters(), lr=self.conf['lr'], momentum=self.conf['momentum'],weight_decay=self.conf["weight_decay"])
         # optimizer = torch.optim.Adam(self.local_model.parameters(), lr=self.conf['lr'])
         criterion = torch.nn.CrossEntropyLoss()
         for e in range(self.conf["local_epochs"]):

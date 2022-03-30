@@ -14,6 +14,8 @@ conf = {
 	#batch size
 	"batch_size" : 64,
 
+	"weight_decay":1e-5,
+
     #学习速率
 	"lr" : 0.001,
 
