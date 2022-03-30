@@ -17,7 +17,8 @@ def label_skew(data,label,K,n_parties,beta,min_require_size = 10):
     y_train = data[label]
 
     min_size = 0
-
+    partition_all = []
+    front = np.array([0])
     N = y_train.shape[0]  # N样本总数
     # return train_datasets, test_dataset, n_input, number_samples
     split_data = {}
@@ -32,6 +33,11 @@ def label_skew(data,label,K,n_parties,beta,min_require_size = 10):
 
             proportions = proportions / proportions.sum()
             proportions = (np.cumsum(proportions) * len(idx_k)).astype(int)[:-1]
+            
+            back = np.array([idx_k.shape[0]])
+            partition =np.concatenate((front,proportions,back),axis=0)
+            partition = np.diff(partition)#根据切分点求差值来计算各标签划分数据量
+            partition_all.append(partition)
             idx_batch = [idx_j + idx.tolist() for idx_j, idx in zip(idx_batch, np.split(idx_k, proportions))]
 
             min_size = min([len(idx_j) for idx_j in idx_batch])
@@ -41,7 +47,7 @@ def label_skew(data,label,K,n_parties,beta,min_require_size = 10):
         np.random.shuffle(idx_batch[j])
         split_data[j] = data.iloc[idx_batch[j], :]
 
-    return split_data
+    return split_data,partition_all
 
 
 def get_tabular_data():
@@ -85,8 +91,10 @@ def get_cifar10():
     ###训练数据
     train_data = pd.read_csv(conf["train_dataset"])
 
-    train_data = label_skew(train_data,conf["label_column"],conf["num_classes"],conf["num_parties"],0.1)
-
+    train_data,partition_all = label_skew(train_data,conf["label_column"],conf["num_classes"],conf["num_parties"],0.1)
+    print("各节点数据划分情况")
+    print(partition_all)
+    
     train_datasets = {}
     val_datasets = {}
     ##各节点数据量
