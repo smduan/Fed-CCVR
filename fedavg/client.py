@@ -87,7 +87,9 @@ class Client(object):
         """
         features = np.array(features)
         mean = np.mean(features, axis=0)
-        cov = np.cov(features.T)
+
+        # 注意这里设置bias=1，相当于公式(2)除以N而不是N-1，因为当N=1时相当于除以0，出现Nan
+        cov = np.cov(features.T, bias=1)
         return mean,cov
 
     def cal_distributions(self, model):
