@@ -142,26 +142,26 @@ class Server(object):
 
         for c in range(len(client_mean[clients[0]])):
 
-            mean_c = np.matrix(np.zeros_like(client_mean[clients[0]][0]))
+            mean_c = np.zeros_like(client_mean[clients[0]][0])
             n_c = 0
             # 类别c的数据总数
             for k in clients:
                 n_c += client_length[k][c]
 
-            cov_ck = np.matrix(np.zeros_like(client_cov[clients[0]][0]))
-            mul_mean = np.matrix(np.zeros_like(client_cov[clients[0]][0]))
+            cov_ck = np.zeros_like(client_cov[clients[0]][0])
+            mul_mean = np.zeros_like(client_cov[clients[0]][0])
 
             for k in clients:
                 # 类别c特征加权平均均值
-                mean_c += np.matrix((client_length[k][c] / n_c) * client_mean[k][c])  # 公式(3)
+                mean_c += (client_length[k][c] / n_c) * np.array(client_mean[k][c])  # 公式(3)
 
-                cov_ck += np.matrix(((client_length[k][c] - 1) / (n_c - 1)) * client_cov[k][c])
+                mean_ck = np.array(client_mean[k][c])
+                mul_mean += ((client_length[k][c]) / (n_c - 1)) * np.dot(mean_ck.T, mean_ck)
 
-                mean_ck = np.matrix(client_mean[k][c])
-                mul_mean += np.matrix(((client_length[k][c]) / (n_c - 1)) * (mean_ck.T * mean_ck))
+                cov_ck += ((client_length[k][c] - 1) / (n_c - 1)) * np.array(client_cov[k][c])
 
             g_mean.append(mean_c)
-            cov_c = cov_ck + mul_mean - (n_c / (n_c - 1)) * (mean_c.T * mean_c)  ##公式（4）
+            cov_c = cov_ck + mul_mean - (n_c / (n_c - 1)) * np.dot(mean_c.T, mean_c)  ##公式（4）
 
             g_cov.append(cov_c)
 

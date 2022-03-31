@@ -43,6 +43,11 @@ if __name__ == '__main__':
 
     print("参与方初始化完成！")
 
+    # 保存模型
+    if not os.path.isdir(conf["model_dir"]):
+        os.mkdir(conf["model_dir"])
+    max_acc = 0
+
     #联邦训练
     for e in range(conf["global_epochs"]):
 
@@ -56,6 +61,11 @@ if __name__ == '__main__':
         #测试全局模型
         acc, loss = server.model_eval()
         print("Epoch %d, global_acc: %f, global_loss: %f\n" % (e, acc, loss))
+
+        #保存最好的模型
+        if acc >= max_acc:
+            torch.save(server.global_model.state_dict(), os.path.join(conf["model_dir"], "model-epoch{}.pth".format(e)))
+            max_acc = acc
 
     #使用VR进行后处理
     client_mean = {}
@@ -113,9 +123,7 @@ if __name__ == '__main__':
     acc, loss = server.model_eval()
     print("After retraining global_acc: %f, global_loss: %f\n" % (acc, loss))
 
-    #保存模型
-    if not os.path.isdir(conf["model_dir"]):
-        os.mkdir(conf["model_dir"])
+
     torch.save(server.global_model.state_dict(), os.path.join(conf["model_dir"],conf["model_file"]))
 
     print("联邦训练完成，模型保存在{0}目录下!".format(conf["model_dir"]))
