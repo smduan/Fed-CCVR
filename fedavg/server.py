@@ -168,12 +168,33 @@ class Server(object):
         return g_mean, g_cov
 
 
+    def get_feature_label(self):
+        self.global_model.eval()
+        
+        cnt = 0
+        features = []
+        true_labels = []
+        pred_labels = []
+        for batch_id, batch in enumerate(self.test_loader):
+            data, target = batch
+            cnt += data.size()[0]
 
+            if torch.cuda.is_available():
+                data = data.cuda()
+                target = target.cuda()
 
+            feature, output = self.global_model(data)
+            pred = output.data.max(1)[1]  # get the index of the max log-probability
+            
+            features.append(feature)
+            true_labels.append(target)
+            pred_labels.append(pred)
+            
+            if cnt > 1000:
+                break
 
+        features = torch.cat(features, dim=0)
+        true_labels = torch.cat(true_labels, dim=0)
+        pred_labels = torch.cat(pred_labels, dim=0)
 
-
-
-
-
-
+        return features, true_labels, pred_labels
