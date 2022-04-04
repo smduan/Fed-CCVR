@@ -11,6 +11,11 @@ from utils import get_cifar10
 import copy
 
 
+def fed_ccvr():
+
+    pass
+
+
 if __name__ == '__main__':
 
     train_datasets, val_datasets, test_dataset = get_cifar10()
@@ -66,6 +71,7 @@ if __name__ == '__main__':
         if acc >= max_acc:
             torch.save(server.global_model.state_dict(), os.path.join(conf["model_dir"], "model-epoch{}.pth".format(e)))
             max_acc = acc
+
 
     #使用VR进行后处理
     client_mean = {}

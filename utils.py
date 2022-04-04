@@ -52,43 +52,7 @@ def label_skew(data,label,K,n_parties,beta,min_require_size = 10):
     return split_data,partition_all
 
 
-def get_tabular_data():
-    """
-    :return: 加载数据
-    """
-    ###训练数据路径
-    train_dataset_file = conf["train_dataset"]
-    #测试数据路径
-    test_dataset_file = conf["test_dataset"]
-
-    train_datasets = {}
-    val_datasets = {}
-    ##各节点数据量
-    number_samples = {}
-
-    ##读取数据集,训练数据拆分成训练集和测试集
-    for key in train_dataset_file.keys():
-        train_dataset = pd.read_csv(train_dataset_file[key])
-
-        val_dataset = train_dataset[:int(len(train_dataset)*conf["split_ratio"])]
-        train_dataset = train_dataset[int(len(train_dataset)*conf["split_ratio"]):]
-        train_datasets[key] = MyTabularDataset(train_dataset, conf["label_column"])
-        val_datasets[key] = MyTabularDataset(val_dataset,conf["label_column"])
-
-        number_samples[key] = len(train_dataset)
-
-    ##测试集,在Server端测试模型效果
-    test_dataset = pd.read_csv(test_dataset_file)
-
-    #模型输入维度
-    n_input = test_dataset.shape[1] - 1
-    test_dataset = MyTabularDataset(test_dataset,conf["label_column"])
-    print("数据加载完成!")
-
-    return train_datasets, val_datasets, test_dataset, n_input
-
-
-def get_cifar10():
+def get_data():
 
     ###训练数据
     train_data = pd.read_csv(conf["train_dataset"])
