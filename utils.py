@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from conf import conf
-from fedavg.datasets import MyTabularDataset
 from sklearn.utils import shuffle
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
@@ -57,7 +56,7 @@ def get_data():
     ###训练数据
     train_data = pd.read_csv(conf["train_dataset"])
 
-    train_data,partition_all = label_skew(train_data,conf["label_column"],conf["num_classes"],conf["num_parties"],0.1)
+    train_data,partition_all = label_skew(train_data,conf["label_column"],conf["num_classes"],conf["num_parties"],conf["beta"])
     print("各节点数据划分情况")
     print(partition_all)
     
@@ -84,10 +83,6 @@ def get_data():
     print("数据加载完成!")
 
     return train_datasets, val_datasets, test_dataset
-
-def CKA():
-
-    pass
 
 
 class FedTSNE:

@@ -2,15 +2,23 @@
 ##配置文件
 conf = {
 
-	#选择模型
-	"model_name" : "cnn",
+	#数据类型，tabular, image
+	"data_type" : "tabular",
+
+	#选择模型mlp,simple-cnn,vgg
+	"model_name" : "mlp",
+
+	#处理方法:fed_ccvr
+	"no-iid": "",
 
 	#全局epoch
-	"global_epochs" : 10,
+	"global_epochs" : 1000,
 
 	#本地epoch
-	"local_epochs" : 10,
+	"local_epochs" : 3,
 
+	#狄利克雷参数
+	"beta" : 0.5,
 
 	"batch_size" : 64,
 
@@ -22,7 +30,7 @@ conf = {
 	"momentum" : 0.9,
 
 	#分类
-	"num_classes": 10,
+	"num_classes": 2,
 
 	#节点数
 	"num_parties":10,
@@ -40,10 +48,10 @@ conf = {
 	"data_column": "file",
 
     #测试数据
-	"test_dataset": "./data/cifar10/test/test.csv",
+	"test_dataset": "./data/adult/adult_test.csv",
 
     #训练数据
-	"train_dataset" : "./data/cifar10/train/train.csv",
+	"train_dataset" : "./data/adult/adult_train.csv",
 
     #模型保存目录
 	"model_dir":"./save_model/",

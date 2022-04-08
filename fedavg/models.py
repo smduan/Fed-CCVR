@@ -25,6 +25,7 @@ class MLP(nn.Module):
 
     def forward(self, X):
         x = X.view(X.shape[0], -1)
+
         x = F.relu(self.hidden_1(x))  # hidden layer 1
         x = self.dropout(self.bn1(x))
 
@@ -39,7 +40,7 @@ class MLP(nn.Module):
 
         x = self.out(feature)
 
-        return x
+        return feature, x
 
 
 class CNN_Model(nn.Module):
@@ -101,6 +102,13 @@ def weights_init_normal(m):
     classname = m.__class__.__name__
     if classname.find('Conv') != -1:
         torch.nn.init.normal(m.weight, 0.0, 0.02)
-    elif classname.find('BatchNorm2d') != -1:
+    elif classname.find('BatchNorm') != -1:
         torch.nn.init.normal(m.weight, 1.0, 0.02)
         torch.nn.init.constant(m.bias, 0.0)
+    elif classname.find('Linear') != -1:
+        torch.nn.init.normal(m.weight, 0.0, 0.01)
+        torch.nn.init.constant(m.bias, 0.0)
+
+
+
+

@@ -24,7 +24,7 @@ class MyTabularDataset(Dataset):
         label = self.label[index]
         data = self.data[index]
 
-        return torch.tensor(data), label
+        return torch.tensor(data).float(), label
 
 class MyImageDataset(Dataset):
     def __init__(self, dataset, file_col, label_col):
@@ -74,6 +74,21 @@ class VRDataset(Dataset):
         label = torch.tensor(self.label[index])
 
         return data, label
+
+def get_dataset(conf, data):
+    """
+    :param conf: 配置
+    :param data: 数据 (DataFrame)
+    :return:
+    """
+    if conf['data_type'] == 'tabular':
+        dataset = MyTabularDataset(data, conf['label_column'])
+    elif conf['data_type'] == 'image':
+        dataset = MyImageDataset(data, conf['data_column'], conf['label_column'])
+    else:
+        return None
+    return dataset
+
 
 
 

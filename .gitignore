@@ -132,4 +132,6 @@ dmypy.json
 .idea/
 data/
 save_model/
+temp.py
+data-syn/
 

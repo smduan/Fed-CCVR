@@ -1,6 +1,7 @@
 import torch
-from fedavg.datasets import MyImageDataset, VRDataset
+from fedavg.datasets import get_dataset, VRDataset
 import numpy as np
+from sklearn.metrics import roc_auc_score
 
 class Server(object):
 
@@ -10,7 +11,7 @@ class Server(object):
 
         self.global_model = model
 
-        self.test_dataset = MyImageDataset(test_df,conf["data_column"], conf["label_column"])
+        self.test_dataset = get_dataset(conf, test_df)
         self.test_loader = torch.utils.data.DataLoader(self.test_dataset, batch_size=conf["batch_size"],shuffle=False)
 
     def model_aggregate(self, clients_model, weights):
@@ -27,14 +28,18 @@ class Server(object):
 
         self.global_model.load_state_dict(new_model)
 
+    @torch.no_grad()
     def model_eval(self):
         self.global_model.eval()
 
         total_loss = 0.0
         correct = 0
         dataset_size = 0
+        predict_prob = []
+        labels = []
 
         criterion = torch.nn.CrossEntropyLoss()
+        # criterion = torch.nn.functional.cross_entropy()
         for batch_id, batch in enumerate(self.test_loader):
             data, target = batch
             dataset_size += data.size()[0]
@@ -47,14 +52,19 @@ class Server(object):
 
             total_loss += criterion(output, target) # sum up batch loss
             pred = output.data.max(1)[1]  # get the index of the max log-probability
+
+            predict_prob.extend(output.data[:,1].tolist())
+            labels.extend(target.data.cpu().tolist())
             correct += pred.eq(target.data.view_as(pred)).cpu().sum().item()
+
 
         acc = 100.0 * (float(correct) / float(dataset_size))
         total_l = total_loss.cpu().detach().numpy() / dataset_size
-
+        print("roc_auc = {}".format(roc_auc_score(labels,predict_prob)))
 
         return acc, total_l
 
+    @torch.no_grad()
     def model_eval_vr(self, eval_vr, label):
         """
         :param eval_vr:
@@ -72,6 +82,7 @@ class Server(object):
         dataset_size = 0
 
         criterion = torch.nn.CrossEntropyLoss()
+        # criterion = torch.nn.functional.cross_entropy()
         for batch_id, batch in enumerate(eval_loader):
             data, target = batch
             dataset_size += data.size()[0]
